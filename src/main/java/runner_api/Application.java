@@ -13,8 +13,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAutoConfiguration
 @ComponentScan
 @EnableSwagger2
-@EntityScan(basePackages = { "runner_api.account.domain" })
-@EnableJpaRepositories(basePackages = { "runner_api.account.repo" })
+@EntityScan(basePackages = { "runner_api.user.domain" })
+@EnableJpaRepositories(basePackages = {"runner_api.user.repo"})
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
