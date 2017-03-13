@@ -1,29 +1,26 @@
-package runner_api.account.domain;
+package runner_api.user.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-@ApiModel( value = "AccountRest", description = "AccountRest resource representation" )
-public class AccountRest {
-    @ApiModelProperty(value = "AccountRest id")
-    private Integer id;
-    @ApiModelProperty(value = "AccountRest name", required = true )
+@ApiModel( value = "UserRest", description = "UserRest resource representation" )
+public class UserRest {
+    @ApiModelProperty(value = "UserRest name", required = true )
     private String name;
-    @ApiModelProperty(value = "AccountRest email", required = true )
+    @ApiModelProperty(value = "UserRest email", required = true )
     private String email;
-    @ApiModelProperty(value = "AccountRest password")
+    @ApiModelProperty(value = "UserRest password")
     private String password;
-    @ApiModelProperty(value = "AccountRest password hash")
+    @ApiModelProperty(value = "UserRest password hash")
     private String passwordHash;
 
     // Jackson auto mapping
-    public AccountRest() {
+    public UserRest() {
     }
 
-    public AccountRest(Integer id, String name, String email, String passwordHash) {
-        this.id = id;
+    public UserRest(String name, String email, String passwordHash) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -35,10 +32,6 @@ public class AccountRest {
 
     public String getPassword() {
         return password;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public String getName() {
