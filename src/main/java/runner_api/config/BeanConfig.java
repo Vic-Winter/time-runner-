@@ -2,8 +2,10 @@ package runner_api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import runner_api.event.service.EventService;
+import runner_api.event.service.EventServiceImpl;
 import runner_api.user.service.UserService;
 import runner_api.user.service.UserServiceImpl;
 
@@ -17,5 +19,11 @@ public class BeanConfig {
     public UserService userService ()
     {
         return new UserServiceImpl();
+    }
+
+    @Bean
+    public EventService eventService ()
+    {
+        return new EventServiceImpl();
     }
 }
