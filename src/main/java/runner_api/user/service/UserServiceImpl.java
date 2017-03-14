@@ -1,10 +1,14 @@
 package runner_api.user.service;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import runner_api.error.ErrorCode;
 import runner_api.error.RestError;
 import runner_api.user.domain.User;
+import runner_api.user.domain.UserRole;
 import runner_api.user.repo.UserRepository;
 import runner_api.user.repo.UserRoleRepository;
 
@@ -13,10 +17,10 @@ import runner_api.user.repo.UserRoleRepository;
  */
 public class UserServiceImpl implements UserService {
     @Autowired
-    UserRepository userRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    UserRoleRepository userRoleRepo;
+    private UserRoleRepository userRoleRepo;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -37,18 +41,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) throws RestError{
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User createdUser = userRepo.save(user);
-        return getByName(createdUser.getName());
+        user.setRoles(Arrays.asList(new UserRole(user.getName(), "ROLE_USER")));
+        try {
+            User createdUser = userRepo.save(user);
+            return userRepo.findOne(createdUser.getName());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.ENTITY_EXIST, "User with same name already exist!");
+        }
     }
 
     @Override
     public User update(User user) throws RestError{
-        if (userRepo.findOne(user.getName()) == null) {
+        User existingUser = userRepo.findOne(user.getName());
+        if (existingUser == null) {
             throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "User not found!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User updatedUser = userRepo.save(user);
-        return userRepo.findOne(updatedUser.getName());
+        user.setRoles(existingUser.getRoles());
+        try {
+            User updatedUser = userRepo.save(user);
+            return userRepo.findOne(updatedUser.getName());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.BAD_REQUEST, "User cannot be updated!");
+        }
     }
 
     @Override

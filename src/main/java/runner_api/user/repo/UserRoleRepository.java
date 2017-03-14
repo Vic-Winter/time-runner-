@@ -9,7 +9,6 @@ import runner_api.user.domain.UserRole;
 /**
  * Created by yeleilu on 13/03/2017.
  */
-
 public interface UserRoleRepository extends CrudRepository<UserRole, Integer> {
     @Modifying
     @Transactional
