@@ -1,5 +1,8 @@
 package runner_api.user.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +16,15 @@ import runner_api.error.RestError;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity listAll() {
         try {
             Iterable<User> list = userService.listAll();
-            return new ResponseEntity(list, HttpStatus.OK);
+            List<UserRest> userlist = new ArrayList<>();
+            list.forEach(user -> userlist.add(mapToRest(user)));
+            return new ResponseEntity(userlist, HttpStatus.OK);
         }
         catch (RestError restError) {
             return new ResponseEntity(restError, HttpStatus.BAD_REQUEST);
