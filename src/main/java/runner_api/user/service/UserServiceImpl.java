@@ -42,8 +42,13 @@ public class UserServiceImpl implements UserService {
     public User create(User user) throws RestError{
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Arrays.asList(new UserRole(user.getName(), "ROLE_USER")));
-        User createdUser = userRepo.save(user);
-        return getByName(createdUser.getName());
+        try {
+            User createdUser = userRepo.save(user);
+            return userRepo.findOne(createdUser.getName());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.ENTITY_EXIST, "User with same name already exist!");
+        }
     }
 
     @Override
@@ -54,8 +59,13 @@ public class UserServiceImpl implements UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(existingUser.getRoles());
-        User updatedUser = userRepo.save(user);
-        return userRepo.findOne(updatedUser.getName());
+        try {
+            User updatedUser = userRepo.save(user);
+            return userRepo.findOne(updatedUser.getName());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.BAD_REQUEST, "User cannot be updated!");
+        }
     }
 
     @Override

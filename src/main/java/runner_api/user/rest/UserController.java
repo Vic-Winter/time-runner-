@@ -19,6 +19,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity listAll() {
         try {
             Iterable<User> list = userService.listAll();
@@ -27,51 +28,55 @@ public class UserController {
             return new ResponseEntity(userlist, HttpStatus.OK);
         }
         catch (RestError restError) {
-            return new ResponseEntity(restError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity getById(@PathVariable String name) {
         try {
             User user = userService.getByName(name);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
-            return new ResponseEntity(restError, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody UserRest userRest) {
         try {
             User user = userService.create(mapFromRest(userRest));
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
-            return new ResponseEntity(restError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.PUT)
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity update(@PathVariable String name, @RequestBody UserRest userRest) {
         try {
             User user = userService.update(mapFromRest(userRest));
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
-            return new ResponseEntity(restError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity delete(@PathVariable String name) {
         try {
             userService.delete(name);
             return new ResponseEntity("UserRest deleted successfully", HttpStatus.OK);
         }
         catch (RestError restError) {
-            return new ResponseEntity(restError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
 

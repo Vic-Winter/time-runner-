@@ -1,11 +1,13 @@
 package runner_api.error;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 /**
  * Created by yeleilu on 12/03/2017.
  */
+@ResponseStatus(value=HttpStatus.NOT_FOUND)
 public class RestError extends Throwable
 {
 
@@ -18,7 +20,11 @@ public class RestError extends Throwable
         this.errorMessage = errorMessage;
     }
 
-    public Enum getErrorCode()
+    public static RestErrorEntity mapToRest (RestError restError) {
+        return new RestErrorEntity(restError.getErrorCode(), restError.getErrorMessage());
+    }
+
+    public ErrorCode getErrorCode()
     {
         return errorCode;
     }
