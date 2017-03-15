@@ -2,23 +2,18 @@ package runner_api.event.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
-
-import runner_api.user.domain.User;
 
 
 /**
@@ -37,14 +32,11 @@ public class Event {
     private String title;
     @Column
     private String description;
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="usename")
+    @JoinColumn(name="usename", updatable = false)
     @NotNull
-    private User user;
     private String username;
     @CreationTimestamp
     @Column(name="created_on", insertable = false, updatable = false)
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
 
@@ -96,15 +88,5 @@ public class Event {
     public void setCreatedOn(final Date createdOn)
     {
         this.createdOn = createdOn;
-    }
-
-    public User getUser()
-    {
-        return user;
-    }
-
-    public void setUser(final User user)
-    {
-        this.user = user;
     }
 }
