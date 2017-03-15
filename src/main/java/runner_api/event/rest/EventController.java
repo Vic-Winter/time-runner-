@@ -1,5 +1,8 @@
 package runner_api.event.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +26,20 @@ public class EventController
 {
     @Autowired
     private EventService eventService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity getByUsername(@RequestParam String username) {
+        try {
+            Iterable<Event> list = eventService.getEventsByUsername(username);
+            List<EventRest> eventList = new ArrayList<>();
+            list.forEach(event -> eventList.add(mapToRest(event)));
+            return new ResponseEntity(eventList, HttpStatus.OK);
+        }
+        catch (RestError restError) {
+            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
@@ -47,11 +65,11 @@ public class EventController
         }
     }
 
-    @RequestMapping(value = "/{name}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity update(@PathVariable String name, @RequestBody EventRest eventRest) {
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody EventRest eventRest) {
         try {
-            Event event = eventService.update(mapFromRest(eventRest));
+            Event event = eventService.update(id, mapFromRest(eventRest));
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (RestError restError) {
@@ -59,11 +77,11 @@ public class EventController
         }
     }
 
-    @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity delete(@PathVariable String name) {
+    public ResponseEntity delete(@PathVariable Integer id) {
         try {
-            eventService.delete(name);
+            eventService.delete(id);
             return new ResponseEntity("EventRest deleted successfully", HttpStatus.OK);
         }
         catch (RestError restError) {

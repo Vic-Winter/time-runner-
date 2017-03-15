@@ -1,9 +1,11 @@
 package runner_api.event.service;
 
-import java.util.Iterator;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import runner_api.error.ErrorCode;
 import runner_api.error.RestError;
 import runner_api.event.domain.Event;
+import runner_api.event.repo.EventRepository;
 
 
 /**
@@ -11,39 +13,68 @@ import runner_api.event.domain.Event;
  */
 public class EventServiceImpl implements EventService
 {
+    @Autowired
+    private EventRepository eventRepository;
+
     @Override
-    public Iterator<Event> getEventsByUsername(final String username) throws RestError
+    public Iterable<Event> getEventsByUsername(final String username) throws RestError
     {
-        return null;
+        return eventRepository.getEventsByUserName(username);
     }
 
     @Override
     public Event getOne(final Integer id) throws RestError
     {
-        return null;
+        Event event = eventRepository.findOne(id);
+        if (event == null) {
+            throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
+        }
+        return event;
     }
 
     @Override
-    public Event getEventByName(final String name) throws RestError
+    public Event findByTitle(final String name) throws RestError
     {
-        return null;
+        Event event = eventRepository.findByTitle(name);
+        if (event == null) {
+            throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
+        }
+        return event;
     }
 
     @Override
     public Event create(final Event event) throws RestError
     {
-        return null;
+        try {
+            Event createdEvent = eventRepository.save(event);
+            return eventRepository.findOne(createdEvent.getId());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.ENTITY_EXIST, "Event with same name already exist!");
+        }
     }
 
     @Override
-    public Event update(final Event event) throws RestError
+    public Event update(final Integer id, final Event event) throws RestError
     {
-        return null;
+        Event existingEvent = eventRepository.findOne(id);
+        if (existingEvent == null) {
+            throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
+        }
+        try {
+            event.setId(id);
+            event.setCreatedOn(existingEvent.getCreatedOn());
+            Event updatedEvent = eventRepository.save(event);
+            return eventRepository.findOne(updatedEvent.getId());
+        }
+        catch (Exception e) {
+            throw new RestError(ErrorCode.BAD_REQUEST, "Event cannot be updated!");
+        }
     }
 
     @Override
-    public void delete(final String name) throws RestError
+    public void delete(final Integer id) throws RestError
     {
-
+        eventRepository.delete(id);
     }
 }
