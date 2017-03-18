@@ -18,7 +18,8 @@ import runner_api.user.service.UserServiceImpl;
  */
 @Configuration
 @EnableTransactionManagement
-public class BeanConfig {
+public class ServiceRegistration
+{
     @Bean
     public UserService userService ()
     {
