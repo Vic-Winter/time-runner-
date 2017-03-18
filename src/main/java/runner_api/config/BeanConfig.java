@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import runner_api.event.service.EventService;
 import runner_api.event.service.EventServiceImpl;
+import runner_api.timeSlide.service.TimeSlideService;
+import runner_api.timeSlide.service.TimeSlideServiceImpl;
 import runner_api.user.service.UserService;
 import runner_api.user.service.UserServiceImpl;
 
@@ -25,5 +27,11 @@ public class BeanConfig {
     public EventService eventService ()
     {
         return new EventServiceImpl();
+    }
+
+    @Bean
+    public TimeSlideService timeSlideService ()
+    {
+        return new TimeSlideServiceImpl();
     }
 }

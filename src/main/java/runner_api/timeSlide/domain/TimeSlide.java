@@ -30,12 +30,12 @@ public class TimeSlide
     private Integer id;
     @JoinColumn(name="event_id", updatable = false)
     @NotNull
-    private String eventId;
+    private Integer eventId;
     @CreationTimestamp
-    @Column(name="start_time", insertable = false)
+    @Column(name="starttime", insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
-    @Column(name="end_time", insertable = false)
+    @Column(name="endtime", insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
 
@@ -49,12 +49,12 @@ public class TimeSlide
         this.id = id;
     }
 
-    public String getEventId()
+    public Integer getEventId()
     {
         return eventId;
     }
 
-    public void setEventId(final String eventId)
+    public void setEventId(final Integer eventId)
     {
         this.eventId = eventId;
     }
