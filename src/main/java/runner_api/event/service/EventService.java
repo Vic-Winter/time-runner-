@@ -9,10 +9,10 @@ import runner_api.event.domain.Event;
  */
 public interface EventService
 {
-    Iterable<Event> getEventsByUsername(String username) throws ServiceError;
-    Event getOne(Integer id) throws ServiceError;
-    Event findByTitle(String name) throws ServiceError;
-    Event create(Event event) throws ServiceError;
-    Event update(Integer id, Event event) throws ServiceError;
-    void delete(Integer id) throws ServiceError;
+    Iterable<Event> getEventsByUsername(String username, String loginUserName) throws ServiceError;
+    Event getOne(Integer id, String loginUserName) throws ServiceError;
+    Event findByTitle(String name, String loginUserName) throws ServiceError;
+    Event create(Event event, String loginUserName) throws ServiceError;
+    Event update(Integer id, Event event, String loginUserName) throws ServiceError;
+    void delete(Integer id, String loginUserName) throws ServiceError;
 }

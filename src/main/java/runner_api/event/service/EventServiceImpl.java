@@ -6,6 +6,8 @@ import runner_api.error.domain.ErrorCode;
 import runner_api.error.domain.ServiceError;
 import runner_api.event.domain.Event;
 import runner_api.event.repo.EventRepository;
+import runner_api.permission.service.PermissionService;
+import runner_api.user.domain.Action;
 
 
 /**
@@ -16,35 +18,42 @@ public class EventServiceImpl implements EventService
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private PermissionService permissionService;
+
     @Override
-    public Iterable<Event> getEventsByUsername(final String username) throws ServiceError
+    public Iterable<Event> getEventsByUsername(final String username, String loginUserName) throws ServiceError
     {
+        permissionService.verifyPermission(username, loginUserName, Action.VIEWEVENT);
         return eventRepository.getEventsByUserName(username);
     }
 
     @Override
-    public Event getOne(final Integer id) throws ServiceError
+    public Event getOne(final Integer id, String loginUserName) throws ServiceError
     {
         Event event = eventRepository.findOne(id);
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
+        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 
     @Override
-    public Event findByTitle(final String name) throws ServiceError
+    public Event findByTitle(final String name, String loginUserName) throws ServiceError
     {
         Event event = eventRepository.findByTitle(name);
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
+        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 
     @Override
-    public Event create(final Event event) throws ServiceError
+    public Event create(final Event event, String loginUserName) throws ServiceError
     {
+        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.EDITEVENT);
         try {
             Event createdEvent = eventRepository.save(event);
             return eventRepository.findOne(createdEvent.getId());
@@ -55,12 +64,10 @@ public class EventServiceImpl implements EventService
     }
 
     @Override
-    public Event update(final Integer id, final Event event) throws ServiceError
+    public Event update(final Integer id, final Event event, String loginUserName) throws ServiceError
     {
-        Event existingEvent = eventRepository.findOne(id);
-        if (existingEvent == null) {
-            throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
-        }
+        Event existingEvent = this.getOne(id, loginUserName);
+        permissionService.verifyPermission(existingEvent.getUsername(), loginUserName, Action.EDITEVENT);
         try {
             event.setId(id);
             event.setCreatedOn(existingEvent.getCreatedOn());
@@ -73,8 +80,10 @@ public class EventServiceImpl implements EventService
     }
 
     @Override
-    public void delete(final Integer id) throws ServiceError
+    public void delete(final Integer id, String loginUserName) throws ServiceError
     {
+        Event existingEvent = this.getOne(id, loginUserName);
+        permissionService.verifyPermission(existingEvent.getUsername(), loginUserName, Action.EDITEVENT);
         eventRepository.delete(id);
     }
 }

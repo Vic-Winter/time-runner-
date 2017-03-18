@@ -1,5 +1,6 @@
 package runner_api.event.rest;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,10 @@ public class EventController
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity getByUsername(@RequestParam String username) {
+    public ResponseEntity getByUsername(@RequestParam String username, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            Iterable<Event> list = eventService.getEventsByUsername(username);
+            Iterable<Event> list = eventService.getEventsByUsername(username, loginUserName);
             List<EventRest> eventList = new ArrayList<>();
             list.forEach(event -> eventList.add(mapToRest(event)));
             return new ResponseEntity(eventList, HttpStatus.OK);
@@ -47,9 +49,10 @@ public class EventController
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity getById(@PathVariable Integer id) {
+    public ResponseEntity getById(@PathVariable Integer id, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            Event event = eventService.getOne(id);
+            Event event = eventService.getOne(id, loginUserName);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -59,9 +62,10 @@ public class EventController
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ResponseEntity create(@RequestBody EventRest eventRest) {
+    public ResponseEntity create(@RequestBody EventRest eventRest, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            Event event = eventService.create(mapFromRest(eventRest));
+            Event event = eventService.create(mapFromRest(eventRest), loginUserName);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -71,9 +75,10 @@ public class EventController
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity update(@PathVariable Integer id, @RequestBody EventRest eventRest) {
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody EventRest eventRest, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            Event event = eventService.update(id, mapFromRest(eventRest));
+            Event event = eventService.update(id, mapFromRest(eventRest), loginUserName);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -83,9 +88,10 @@ public class EventController
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity delete(@PathVariable Integer id) {
+    public ResponseEntity delete(@PathVariable Integer id, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            eventService.delete(id);
+            eventService.delete(id, loginUserName);
             return new ResponseEntity("EventRest deleted successfully", HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -105,6 +111,6 @@ public class EventController
     }
 
     private static EventRest mapToRest (Event event) {
-        return new EventRest(event.getUsername(), event.getTitle(), event.getDescription());
+        return new EventRest(event.getId(), event.getUsername(), event.getTitle(), event.getDescription(), event.getCreatedOn());
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import runner_api.error.domain.ErrorCode;
 import runner_api.error.domain.ServiceError;
+import runner_api.event.service.EventService;
 import runner_api.timeSlide.domain.TimeSlide;
 import runner_api.timeSlide.repo.TimeSlideRepository;
 
@@ -16,13 +17,17 @@ public class TimeSlideServiceImpl implements TimeSlideService
     @Autowired
     private TimeSlideRepository timeSlideRepository;
 
+    @Autowired
+    private EventService eventService;
+
     @Override
-    public Iterable<TimeSlide> getByEventId(final Integer eventId) throws ServiceError
+    public Iterable<TimeSlide> getByEventId(final Integer eventId, String loginUserName) throws ServiceError
     {
+        eventService.getOne(eventId, loginUserName);
         return timeSlideRepository.getByEventId(eventId);
     }
 
-    @Override
+    /*
     public TimeSlide getOne(final Integer id) throws ServiceError
     {
         TimeSlide timeSlide = timeSlideRepository.findOne(id);
@@ -31,10 +36,12 @@ public class TimeSlideServiceImpl implements TimeSlideService
         }
         return timeSlide;
     }
+    */
 
     @Override
-    public TimeSlide create(final TimeSlide timeSlide) throws ServiceError
+    public TimeSlide create(final TimeSlide timeSlide, String loginUserName) throws ServiceError
     {
+        eventService.getOne(timeSlide.getEventId(), loginUserName);
         try {
             TimeSlide createdEvent = timeSlideRepository.save(timeSlide);
             return timeSlideRepository.findOne(createdEvent.getId());
@@ -45,9 +52,10 @@ public class TimeSlideServiceImpl implements TimeSlideService
     }
 
     @Override
-    public TimeSlide update(final Integer id, final TimeSlide timeSlide) throws ServiceError
+    public TimeSlide update(final Integer id, final TimeSlide timeSlide, String loginUserName) throws ServiceError
     {
         TimeSlide existingTimeSlide = timeSlideRepository.findOne(id);
+        eventService.getOne(existingTimeSlide.getEventId(), loginUserName);
         if (existingTimeSlide == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "TimeSlide not found!");
         }
@@ -62,8 +70,10 @@ public class TimeSlideServiceImpl implements TimeSlideService
     }
 
     @Override
-    public void delete(final Integer id) throws ServiceError
+    public void delete(final Integer id, String loginUserName) throws ServiceError
     {
+        TimeSlide existingTimeSlide = timeSlideRepository.findOne(id);
+        eventService.getOne(existingTimeSlide.getEventId(), loginUserName);
         try {
             timeSlideRepository.delete(id);
         }
@@ -73,8 +83,9 @@ public class TimeSlideServiceImpl implements TimeSlideService
     }
 
     @Override
-    public void deleteByEventId(final Integer eventId) throws ServiceError
+    public void deleteByEventId(final Integer eventId, String loginUserName) throws ServiceError
     {
+        eventService.getOne(eventId, loginUserName);
         try {
             timeSlideRepository.deleteByEventId(eventId);
         }

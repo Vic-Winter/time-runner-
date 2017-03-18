@@ -9,10 +9,9 @@ import runner_api.timeSlide.domain.TimeSlide;
  */
 public interface TimeSlideService
 {
-    Iterable<TimeSlide> getByEventId(Integer eventId) throws ServiceError;
-    TimeSlide getOne(Integer id) throws ServiceError;
-    TimeSlide create(TimeSlide event) throws ServiceError;
-    TimeSlide update(Integer id, TimeSlide event) throws ServiceError;
-    void delete(Integer id) throws ServiceError;
-    void deleteByEventId(Integer eventId) throws ServiceError;
+    Iterable<TimeSlide> getByEventId(Integer eventId, String loginUserName) throws ServiceError;
+    TimeSlide create(TimeSlide event, String loginUserName) throws ServiceError;
+    TimeSlide update(Integer id, TimeSlide event, String loginUserName) throws ServiceError;
+    void delete(Integer id, String loginUserName) throws ServiceError;
+    void deleteByEventId(Integer eventId, String loginUserName) throws ServiceError;
 }
