@@ -30,11 +30,13 @@ public class EventRest {
     {
     }
 
-    public EventRest(final String username, final String title, final String description)
+    public EventRest(final Integer id, final String username, final String title, final String description, final Date createdOn)
     {
+        this.id = id;
         this.username = username;
         this.title = title;
         this.description = description;
+        this.createdOn = createdOn;
     }
 
     public Integer getId()

@@ -32,10 +32,10 @@ public class EventServiceImpl implements EventService
     public Event getOne(final Integer id, String loginUserName) throws ServiceError
     {
         Event event = eventRepository.findOne(id);
-        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
+        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 
@@ -43,10 +43,10 @@ public class EventServiceImpl implements EventService
     public Event findByTitle(final String name, String loginUserName) throws ServiceError
     {
         Event event = eventRepository.findByTitle(name);
-        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
+        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 

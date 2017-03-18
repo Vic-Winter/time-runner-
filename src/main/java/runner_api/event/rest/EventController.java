@@ -111,6 +111,6 @@ public class EventController
     }
 
     private static EventRest mapToRest (Event event) {
-        return new EventRest(event.getUsername(), event.getTitle(), event.getDescription());
+        return new EventRest(event.getId(), event.getUsername(), event.getTitle(), event.getDescription(), event.getCreatedOn());
     }
 }
