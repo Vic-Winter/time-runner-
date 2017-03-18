@@ -7,6 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import runner_api.error.ErrorCode;
 import runner_api.error.RestError;
+import runner_api.permission.service.PermissionService;
+import runner_api.user.domain.Action;
 import runner_api.user.domain.User;
 import runner_api.user.domain.UserRole;
 import runner_api.user.repo.UserRepository;
@@ -22,6 +24,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleRepository userRoleRepo;
 
+    @Autowired
+    private PermissionService permissionService;
+
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -30,7 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByName(String name) throws RestError {
+    public User getByName(String name, String loginUserName) throws RestError {
+        permissionService.verifyPermission(name, loginUserName, Action.VIEWUSER);
         User user = userRepo.findOne(name);
         if (user == null) {
             throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "User not found!");
@@ -39,7 +45,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) throws RestError{
+    public User create(User user, String loginUserName) throws RestError{
+        permissionService.verifyPermission(null, loginUserName, Action.CREATEUSER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Arrays.asList(new UserRole(user.getName(), "ROLE_USER")));
         try {
@@ -52,7 +59,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) throws RestError{
+    public User update(User user, String loginUserName) throws RestError{
+        permissionService.verifyPermission(user.getName(), loginUserName, Action.EDITUSER);
         User existingUser = userRepo.findOne(user.getName());
         if (existingUser == null) {
             throw new RestError(ErrorCode.ENTITY_NOT_FOUND, "User not found!");
@@ -69,7 +77,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String name) throws RestError {
+    public void delete(String name, String loginUserName) throws RestError {
+        permissionService.verifyPermission(name, loginUserName, Action.EDITUSER);
         userRoleRepo.delete(name);
         userRepo.delete(name);
     }

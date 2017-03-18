@@ -6,5 +6,6 @@ package runner_api.error;
 public enum ErrorCode {
     ENTITY_EXIST,
     BAD_REQUEST,
-    ENTITY_NOT_FOUND;
+    ENTITY_NOT_FOUND,
+    PERMISSION_DENIED;
 }
