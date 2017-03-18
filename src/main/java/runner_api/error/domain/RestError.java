@@ -1,27 +1,31 @@
 package runner_api.error.domain;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import runner_api.error.domain.ErrorCode;
 
 
 /**
- * Created by yeleilu on 12/03/2017.
+ * Created by yeleilu on 14/03/2017.
  */
-@ResponseStatus(value=HttpStatus.NOT_FOUND)
-public class RestError extends Throwable
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@ApiModel( value = "ServiceError" )
+public class RestError
 {
-
+    @ApiModelProperty
     private ErrorCode errorCode;
+
     private String errorMessage;
 
-    public RestError(ErrorCode errorCode, String errorMessage)
-    {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    // Jackson auto mapping
+    public RestError() {
     }
 
-    public static RestErrorEntity mapToRest (RestError restError) {
-        return new RestErrorEntity(restError.getErrorCode(), restError.getErrorMessage());
+    public RestError(ErrorCode errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
     }
 
     public ErrorCode getErrorCode()
@@ -29,7 +33,7 @@ public class RestError extends Throwable
         return errorCode;
     }
 
-    public void setErrorCode(ErrorCode errorCode)
+    public void setErrorCode(final ErrorCode errorCode)
     {
         this.errorCode = errorCode;
     }
@@ -39,9 +43,8 @@ public class RestError extends Throwable
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage)
+    public void setErrorMessage(final String errorMessage)
     {
         this.errorMessage = errorMessage;
     }
-
 }

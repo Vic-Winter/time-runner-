@@ -6,16 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import runner_api.error.domain.ServiceError;
+import runner_api.error.service.ErrorService;
 import runner_api.user.domain.User;
 import runner_api.user.domain.UserRest;
 import runner_api.user.service.UserService;
-import runner_api.error.domain.RestError;
+
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ErrorService errorService;
 
     /*
     @RequestMapping(method = RequestMethod.GET)
@@ -27,8 +33,8 @@ public class UserController {
             list.forEach(user -> userlist.add(mapToRest(user)));
             return new ResponseEntity(userlist, HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError restError) {
+            return new ResponseEntity(ServiceError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
     */
@@ -41,8 +47,8 @@ public class UserController {
             User user = userService.getByName(name, loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -54,8 +60,8 @@ public class UserController {
             User user = userService.create(mapFromRest(userRest), loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -69,8 +75,8 @@ public class UserController {
             User user = userService.update(updateRequest, loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -82,8 +88,8 @@ public class UserController {
             userService.delete(name, loginUserName);
             return new ResponseEntity("UserRest deleted successfully", HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 

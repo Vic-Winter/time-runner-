@@ -1,6 +1,6 @@
 package runner_api.permission.service;
 
-import runner_api.error.domain.RestError;
+import runner_api.error.domain.ServiceError;
 import runner_api.user.domain.Action;
 
 
@@ -9,5 +9,5 @@ import runner_api.user.domain.Action;
  */
 public interface PermissionService
 {
-    void verifyPermission (String name, String loginUserName, Action action) throws RestError;
+    void verifyPermission (String name, String loginUserName, Action action) throws ServiceError;
 }

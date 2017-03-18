@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import runner_api.error.domain.RestError;
+import runner_api.error.domain.ServiceError;
+import runner_api.error.service.ErrorService;
 import runner_api.event.domain.Event;
 import runner_api.event.domain.EventRest;
 import runner_api.event.service.EventService;
@@ -27,6 +28,9 @@ public class EventController
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private ErrorService errorService;
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity getByUsername(@RequestParam String username) {
@@ -36,8 +40,8 @@ public class EventController
             list.forEach(event -> eventList.add(mapToRest(event)));
             return new ResponseEntity(eventList, HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -48,8 +52,8 @@ public class EventController
             Event event = eventService.getOne(id);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -60,8 +64,8 @@ public class EventController
             Event event = eventService.create(mapFromRest(eventRest));
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -72,8 +76,8 @@ public class EventController
             Event event = eventService.update(id, mapFromRest(eventRest));
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -84,8 +88,8 @@ public class EventController
             eventService.delete(id);
             return new ResponseEntity("EventRest deleted successfully", HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
