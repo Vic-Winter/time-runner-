@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import runner_api.error.RestError;
+import runner_api.error.domain.RestError;
 import runner_api.timeSlide.domain.TimeSlide;
 import runner_api.timeSlide.domain.TimeSlideRest;
 import runner_api.timeSlide.service.TimeSlideService;

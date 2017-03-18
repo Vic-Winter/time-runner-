@@ -2,8 +2,8 @@ package runner_api.timeSlide.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import runner_api.error.ErrorCode;
-import runner_api.error.RestError;
+import runner_api.error.domain.ErrorCode;
+import runner_api.error.domain.RestError;
 import runner_api.timeSlide.domain.TimeSlide;
 import runner_api.timeSlide.repo.TimeSlideRepository;
 

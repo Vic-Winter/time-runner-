@@ -1,8 +1,6 @@
 package runner_api.user.rest;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import runner_api.user.domain.User;
 import runner_api.user.domain.UserRest;
 import runner_api.user.service.UserService;
-import runner_api.error.RestError;
+import runner_api.error.domain.RestError;
 
 @RestController
 @RequestMapping("/users")

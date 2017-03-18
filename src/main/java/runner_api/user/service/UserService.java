@@ -1,8 +1,7 @@
 package runner_api.user.service;
 
-import runner_api.user.domain.Action;
 import runner_api.user.domain.User;
-import runner_api.error.RestError;
+import runner_api.error.domain.RestError;
 
 /**
  * Created by yeleilu on 12/03/2017.

@@ -1,4 +1,4 @@
-package runner_api.error;
+package runner_api.error.domain;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

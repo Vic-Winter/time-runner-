@@ -5,8 +5,8 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import runner_api.error.ErrorCode;
-import runner_api.error.RestError;
+import runner_api.error.domain.ErrorCode;
+import runner_api.error.domain.RestError;
 import runner_api.permission.service.PermissionService;
 import runner_api.user.domain.Action;
 import runner_api.user.domain.User;

@@ -1,11 +1,10 @@
-package runner_api.error;
-
-import javax.persistence.Entity;
+package runner_api.error.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import runner_api.error.domain.ErrorCode;
 
 
 /**

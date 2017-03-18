@@ -1,6 +1,6 @@
 package runner_api.permission.service;
 
-import runner_api.error.RestError;
+import runner_api.error.domain.RestError;
 import runner_api.user.domain.Action;
 
 
