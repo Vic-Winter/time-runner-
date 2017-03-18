@@ -1,5 +1,6 @@
 package runner_api.user.rest;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /*
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity listAll() {
@@ -31,12 +33,14 @@ public class UserController {
             return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
         }
     }
+    */
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity getById(@PathVariable String name) {
+    public ResponseEntity getById(@PathVariable String name, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            User user = userService.getByName(name);
+            User user = userService.getByName(name, loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
@@ -46,9 +50,10 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ResponseEntity create(@RequestBody UserRest userRest) {
+    public ResponseEntity create(@RequestBody UserRest userRest, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            User user = userService.create(mapFromRest(userRest));
+            User user = userService.create(mapFromRest(userRest), loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
@@ -58,9 +63,12 @@ public class UserController {
 
     @RequestMapping(value = "/{name}", method = RequestMethod.PUT)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity update(@PathVariable String name, @RequestBody UserRest userRest) {
+    public ResponseEntity update(@PathVariable String name, @RequestBody UserRest userRest, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            User user = userService.update(mapFromRest(userRest));
+            User updateRequest = mapFromRest(userRest);
+            updateRequest.setName(name);
+            User user = userService.update(updateRequest, loginUserName);
             return new ResponseEntity(mapToRest(user), HttpStatus.OK);
         }
         catch (RestError restError) {
@@ -70,9 +78,10 @@ public class UserController {
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity delete(@PathVariable String name) {
+    public ResponseEntity delete(@PathVariable String name, Principal principal) {
+        String loginUserName = principal.getName();
         try {
-            userService.delete(name);
+            userService.delete(name, loginUserName);
             return new ResponseEntity("UserRest deleted successfully", HttpStatus.OK);
         }
         catch (RestError restError) {

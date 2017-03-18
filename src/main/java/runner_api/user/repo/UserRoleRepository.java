@@ -11,6 +11,7 @@ import runner_api.user.domain.UserRole;
  */
 @Transactional
 public interface UserRoleRepository extends CrudRepository<UserRole, Integer> {
+    @Transactional
     @Modifying
     @Query("delete from UserRole where username = ?1")
     void delete(String username);
