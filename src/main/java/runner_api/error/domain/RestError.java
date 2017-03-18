@@ -1,29 +1,29 @@
-package runner_api.error;
-
-import javax.persistence.Entity;
+package runner_api.error.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import runner_api.error.domain.ErrorCode;
 
 
 /**
  * Created by yeleilu on 14/03/2017.
  */
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-@ApiModel( value = "RestError" )
-public class RestErrorEntity {
+@ApiModel( value = "ServiceError" )
+public class RestError
+{
     @ApiModelProperty
     private ErrorCode errorCode;
 
     private String errorMessage;
 
     // Jackson auto mapping
-    public RestErrorEntity() {
+    public RestError() {
     }
 
-    public RestErrorEntity (ErrorCode errorCode, String errorMessage) {
+    public RestError(ErrorCode errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

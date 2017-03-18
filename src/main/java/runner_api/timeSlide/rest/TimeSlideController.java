@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import runner_api.error.RestError;
+import runner_api.error.domain.ServiceError;
+import runner_api.error.service.ErrorService;
 import runner_api.timeSlide.domain.TimeSlide;
 import runner_api.timeSlide.domain.TimeSlideRest;
 import runner_api.timeSlide.service.TimeSlideService;
@@ -27,6 +28,9 @@ public class TimeSlideController
     @Autowired
     private TimeSlideService timeSlideService;
 
+    @Autowired
+    private ErrorService errorService;
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity getByEventId(@RequestParam Integer eventId) {
@@ -36,8 +40,8 @@ public class TimeSlideController
             list.forEach(timeSlide -> timeSlideList.add(mapToRest(timeSlide)));
             return new ResponseEntity(timeSlideList, HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -48,8 +52,8 @@ public class TimeSlideController
             TimeSlide timeSlide = timeSlideService.getOne(id);
             return new ResponseEntity(mapToRest(timeSlide), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.NOT_FOUND);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -60,8 +64,8 @@ public class TimeSlideController
             TimeSlide timeSlide = timeSlideService.create(mapFromRest(timeSlideRest));
             return new ResponseEntity(mapToRest(timeSlide), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -72,8 +76,8 @@ public class TimeSlideController
             TimeSlide timeSlide = timeSlideService.update(id, mapFromRest(timeSlideRest));
             return new ResponseEntity(mapToRest(timeSlide), HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -84,8 +88,8 @@ public class TimeSlideController
             timeSlideService.delete(id);
             return new ResponseEntity("TimeSlideRest deleted successfully", HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 
@@ -96,8 +100,8 @@ public class TimeSlideController
             timeSlideService.deleteByEventId(eventId);
             return new ResponseEntity("TimeSlides deleted successfully", HttpStatus.OK);
         }
-        catch (RestError restError) {
-            return new ResponseEntity(RestError.mapToRest(restError), HttpStatus.BAD_REQUEST);
+        catch (ServiceError serviceError) {
+            return new ResponseEntity(errorService.mapToRest(serviceError), errorService.getHTTPStatus(serviceError));
         }
     }
 

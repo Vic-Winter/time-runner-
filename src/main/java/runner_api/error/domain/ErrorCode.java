@@ -1,4 +1,4 @@
-package runner_api.error;
+package runner_api.error.domain;
 
 /**
  * Created by yeleilu on 12/03/2017.

@@ -1,4 +1,4 @@
-package runner_api.error;
+package runner_api.error.domain;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,20 +8,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by yeleilu on 12/03/2017.
  */
 @ResponseStatus(value=HttpStatus.NOT_FOUND)
-public class RestError extends Throwable
+public class ServiceError extends Throwable
 {
 
     private ErrorCode errorCode;
     private String errorMessage;
 
-    public RestError(ErrorCode errorCode, String errorMessage)
+    public ServiceError(ErrorCode errorCode, String errorMessage)
     {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
-    }
-
-    public static RestErrorEntity mapToRest (RestError restError) {
-        return new RestErrorEntity(restError.getErrorCode(), restError.getErrorMessage());
     }
 
     public ErrorCode getErrorCode()

@@ -1,6 +1,6 @@
 package runner_api.timeSlide.service;
 
-import runner_api.error.RestError;
+import runner_api.error.domain.ServiceError;
 import runner_api.timeSlide.domain.TimeSlide;
 
 
@@ -9,10 +9,10 @@ import runner_api.timeSlide.domain.TimeSlide;
  */
 public interface TimeSlideService
 {
-    Iterable<TimeSlide> getByEventId(Integer eventId) throws RestError;
-    TimeSlide getOne(Integer id) throws RestError;
-    TimeSlide create(TimeSlide event) throws RestError;
-    TimeSlide update(Integer id, TimeSlide event) throws RestError;
-    void delete(Integer id) throws RestError;
-    void deleteByEventId(Integer eventId) throws RestError;
+    Iterable<TimeSlide> getByEventId(Integer eventId) throws ServiceError;
+    TimeSlide getOne(Integer id) throws ServiceError;
+    TimeSlide create(TimeSlide event) throws ServiceError;
+    TimeSlide update(Integer id, TimeSlide event) throws ServiceError;
+    void delete(Integer id) throws ServiceError;
+    void deleteByEventId(Integer eventId) throws ServiceError;
 }

@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import runner_api.error.service.ErrorService;
+import runner_api.error.service.ErrorServiceImpl;
 import runner_api.event.service.EventService;
 import runner_api.event.service.EventServiceImpl;
 import runner_api.permission.service.PermissionService;
@@ -42,5 +44,10 @@ public class ServiceRegistration
     public PermissionService permissionService ()
     {
         return new PermissionServiceImpl();
+    }
+
+    @Bean
+    public ErrorService errorService () {
+        return new ErrorServiceImpl();
     }
 }
