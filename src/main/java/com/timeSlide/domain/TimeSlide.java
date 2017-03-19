@@ -2,18 +2,24 @@ package com.timeSlide.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
+import com.event.domain.Event;
 
 
 /**
@@ -26,17 +32,18 @@ public class TimeSlide
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "time_slide_id", updatable=false)
+    @Column(name = "time_slide_id", updatable=false, columnDefinition = "serial")
+    @Generated(GenerationTime.INSERT)
     private Integer id;
-    @JoinColumn(name="event_id", updatable = false)
+    @JoinColumn(name="event_id", updatable = false, foreignKey=@ForeignKey(name = "time_slides_event_id_fkey"))
     @NotNull
-    private Integer eventId;
+    @ManyToOne(cascade = CascadeType.REFRESH, targetEntity=Event.class, fetch= FetchType.LAZY)
+    private Event event;
     @CreationTimestamp
-    @Column(name="starttime", insertable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @Column(name="starttime", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date startTime;
-    @Column(name="endtime", insertable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="endtime", insertable = false, columnDefinition = "DATE")
     private Date endTime;
 
     public Integer getId()
@@ -49,14 +56,14 @@ public class TimeSlide
         this.id = id;
     }
 
-    public Integer getEventId()
+    public Event getEvent()
     {
-        return eventId;
+        return event;
     }
 
-    public void setEventId(final Integer eventId)
+    public void setEvent(final Event event)
     {
-        this.eventId = eventId;
+        this.event = event;
     }
 
     public Date getStartTime()

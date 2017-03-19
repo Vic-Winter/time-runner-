@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.error.domain.ServiceError;
 import com.error.service.ErrorService;
+import com.event.service.EventService;
 import com.timeSlide.domain.TimeSlide;
 import com.timeSlide.domain.TimeSlideRest;
 import com.timeSlide.service.TimeSlideService;
@@ -28,6 +29,9 @@ public class TimeSlideController
 {
     @Autowired
     private TimeSlideService timeSlideService;
+
+    @Autowired
+    private EventService eventService;
 
     @Autowired
     private ErrorService errorService;
@@ -66,7 +70,9 @@ public class TimeSlideController
     public ResponseEntity create(@RequestBody TimeSlideRest timeSlideRest, Principal principal) {
         String loginUserName = principal.getName();
         try {
-            TimeSlide timeSlide = timeSlideService.create(mapFromRest(timeSlideRest), loginUserName);
+            TimeSlide request = mapFromRest(timeSlideRest);
+            request.setEvent(this.eventService.getOne(timeSlideRest.getEventId(), loginUserName));
+            TimeSlide timeSlide = timeSlideService.create(request, loginUserName);
             return new ResponseEntity(mapToRest(timeSlide), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -79,7 +85,9 @@ public class TimeSlideController
     public ResponseEntity update(@PathVariable Integer id, @RequestBody TimeSlideRest timeSlideRest, Principal principal) {
         String loginUserName = principal.getName();
         try {
-            TimeSlide timeSlide = timeSlideService.update(id, mapFromRest(timeSlideRest), loginUserName);
+            TimeSlide request = mapFromRest(timeSlideRest);
+            request.setEvent(this.eventService.getOne(timeSlideRest.getEventId(), loginUserName));
+            TimeSlide timeSlide = timeSlideService.update(id, request, loginUserName);
             return new ResponseEntity(mapToRest(timeSlide), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -118,12 +126,11 @@ public class TimeSlideController
         timeSlide.setId(timeSlideRest.getId());
         timeSlide.setStartTime(timeSlideRest.getStartTime());
         timeSlide.setEndTime(timeSlideRest.getEndTime());
-        timeSlide.setEventId(timeSlideRest.getEventId());
 
         return timeSlide;
     }
 
     private static TimeSlideRest mapToRest (TimeSlide timeSlide) {
-        return new TimeSlideRest(timeSlide.getId(), timeSlide.getEventId(), timeSlide.getStartTime(), timeSlide.getEndTime());
+        return new TimeSlideRest(timeSlide.getId(), timeSlide.getEvent().getId(), timeSlide.getStartTime(), timeSlide.getEndTime());
     }
 }

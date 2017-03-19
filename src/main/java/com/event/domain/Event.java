@@ -2,18 +2,26 @@ package com.event.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
+import com.user.domain.User;
 
 
 /**
@@ -25,19 +33,22 @@ public class Event {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "event_id", updatable=false)
+    @Column(name = "event_id", updatable=false, columnDefinition = "serial")
+    @Generated(GenerationTime.INSERT)
     private Integer id;
-    @Column
     @NotNull
+    @Column(length = 80)
     private String title;
     @Column
-    private String description;
-    @JoinColumn(name="usename", updatable = false)
     @NotNull
-    private String username;
+    private String description;
+    @NotNull
+    @JoinColumn(name="username", foreignKey=@ForeignKey(name = "events_username_fkey"), updatable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, targetEntity=User.class, fetch= FetchType.LAZY)
+    private User user;
     @CreationTimestamp
-    @Column(name="created_on", insertable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @Column(name="created_on", updatable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdOn;
 
     public Integer getId()
@@ -70,14 +81,14 @@ public class Event {
         this.description = description;
     }
 
-    public String getUsername()
+    public User getUser()
     {
-        return username;
+        return user;
     }
 
-    public void setUsername(final String username)
+    public void setUser(final User user)
     {
-        this.username = username;
+        this.user = user;
     }
 
     public Date getCreatedOn()
