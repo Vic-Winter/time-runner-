@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import runner_api.error.domain.ErrorCode;
 import runner_api.error.domain.ServiceError;
 import runner_api.permission.service.PermissionService;
-import runner_api.user.domain.Action;
+import runner_api.permission.domain.Action;
 import runner_api.user.domain.User;
 import runner_api.user.domain.UserRole;
 import runner_api.user.repo.UserRepository;
