@@ -2,6 +2,8 @@ package com.user.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -24,6 +26,7 @@ public class UserRole
     @NotNull
     @Column(updatable=false, columnDefinition = "serial")
     @Generated(GenerationTime.INSERT)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer user_role_id;
     @NotNull
     @Column(length = 20)
