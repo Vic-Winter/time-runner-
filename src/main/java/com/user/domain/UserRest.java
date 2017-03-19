@@ -13,7 +13,7 @@ public class UserRest {
     private String name;
     @ApiModelProperty(value = "UserRest email", required = true )
     private String email;
-    @ApiModelProperty(value = "UserRest password")
+    @ApiModelProperty(value = "UserRest password", required = true )
     private String password;
     @ApiModelProperty(value = "UserRest password hash")
     private String passwordHash;

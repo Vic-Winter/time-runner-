@@ -20,6 +20,7 @@ import com.error.service.ErrorService;
 import com.event.domain.Event;
 import com.event.domain.EventRest;
 import com.event.service.EventService;
+import com.user.service.UserService;
 
 
 @RestController
@@ -28,6 +29,9 @@ public class EventController
 {
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ErrorService errorService;
@@ -65,7 +69,9 @@ public class EventController
     public ResponseEntity create(@RequestBody EventRest eventRest, Principal principal) {
         String loginUserName = principal.getName();
         try {
-            Event event = eventService.create(mapFromRest(eventRest), loginUserName);
+            Event request = mapFromRest(eventRest);
+            request.setUser(this.userService.getByName(eventRest.getUsername(), loginUserName));
+            Event event = eventService.create(request, loginUserName);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -78,7 +84,9 @@ public class EventController
     public ResponseEntity update(@PathVariable Integer id, @RequestBody EventRest eventRest, Principal principal) {
         String loginUserName = principal.getName();
         try {
-            Event event = eventService.update(id, mapFromRest(eventRest), loginUserName);
+            Event request = mapFromRest(eventRest);
+            request.setUser(this.userService.getByName(eventRest.getUsername(), loginUserName));
+            Event event = eventService.update(id, request, loginUserName);
             return new ResponseEntity(mapToRest(event), HttpStatus.OK);
         }
         catch (ServiceError serviceError) {
@@ -105,12 +113,11 @@ public class EventController
         event.setCreatedOn(eventRest.getCreatedOn());
         event.setTitle(eventRest.getTitle());
         event.setDescription(eventRest.getDescription());
-        event.setUsername(eventRest.getUsername());
 
         return event;
     }
 
     private static EventRest mapToRest (Event event) {
-        return new EventRest(event.getId(), event.getUsername(), event.getTitle(), event.getDescription(), event.getCreatedOn());
+        return new EventRest(event.getId(), event.getUser().getName(), event.getTitle(), event.getDescription(), event.getCreatedOn());
     }
 }

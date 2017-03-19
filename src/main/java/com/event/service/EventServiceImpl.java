@@ -35,7 +35,7 @@ public class EventServiceImpl implements EventService
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
-        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
+        permissionService.verifyPermission(event.getUser().getName(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 
@@ -46,14 +46,14 @@ public class EventServiceImpl implements EventService
         if (event == null) {
             throw new ServiceError(ErrorCode.ENTITY_NOT_FOUND, "Event not found!");
         }
-        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.VIEWEVENT);
+        permissionService.verifyPermission(event.getUser().getName(), loginUserName, Action.VIEWEVENT);
         return event;
     }
 
     @Override
     public Event create(final Event event, String loginUserName) throws ServiceError
     {
-        permissionService.verifyPermission(event.getUsername(), loginUserName, Action.EDITEVENT);
+        permissionService.verifyPermission(event.getUser().getName(), loginUserName, Action.EDITEVENT);
         try {
             Event createdEvent = eventRepository.save(event);
             return eventRepository.findOne(createdEvent.getId());
@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService
     public Event update(final Integer id, final Event event, String loginUserName) throws ServiceError
     {
         Event existingEvent = this.getOne(id, loginUserName);
-        permissionService.verifyPermission(existingEvent.getUsername(), loginUserName, Action.EDITEVENT);
+        permissionService.verifyPermission(existingEvent.getUser().getName(), loginUserName, Action.EDITEVENT);
         try {
             event.setId(id);
             event.setCreatedOn(existingEvent.getCreatedOn());
@@ -83,7 +83,7 @@ public class EventServiceImpl implements EventService
     public void delete(final Integer id, String loginUserName) throws ServiceError
     {
         Event existingEvent = this.getOne(id, loginUserName);
-        permissionService.verifyPermission(existingEvent.getUsername(), loginUserName, Action.EDITEVENT);
+        permissionService.verifyPermission(existingEvent.getUser().getName(), loginUserName, Action.EDITEVENT);
         eventRepository.delete(id);
     }
 }

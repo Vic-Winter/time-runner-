@@ -3,6 +3,7 @@ package com.timeSlide.repo;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.timeSlide.domain.TimeSlide;
@@ -13,10 +14,10 @@ import com.timeSlide.domain.TimeSlide;
  */
 @Transactional
 public interface TimeSlideRepository extends CrudRepository<TimeSlide, Integer> {
-    @Query("select t from TimeSlide t where t.eventId = ?1")
-    Iterable<TimeSlide> getByEventId(Integer eventId);
+    @Query("select t from TimeSlide t inner join t.event e where e.id = :eventId")
+    Iterable<TimeSlide> getByEventId(@Param("eventId") Integer eventId);
 
     @Modifying
-    @Query("delete from TimeSlide where eventId = ?1")
+    @Query(value = "delete from time_slides t where t.event_id = ?1", nativeQuery=true)
     void deleteByEventId(Integer eventId);
 }
