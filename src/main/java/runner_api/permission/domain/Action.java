@@ -1,4 +1,4 @@
-package runner_api.user.domain;
+package runner_api.permission.domain;
 
 /**
  * Created by yeleilu on 18/03/2017.
